@@ -1,13 +1,16 @@
-import { useState, ChangeEvent } from "react"
+import { useState, ChangeEvent, FormEvent, Dispatch, useEffect } from "react"
 import { categorias } from "./data/categoria"
 import { Iactividades } from "../types"
+import { IactivityActions, ActivityActionsType } from "../reducers/activity-reducer"
 
-export default function Form() {
-    const [actividades, setActividades] = useState<Iactividades>({
-        categoria: 1,
-        actividad: "",
-        calorias: 0
-    })
+type FormProps = {
+    dispatch: Dispatch<IactivityActions>
+}
+
+export default function Form({dispatch}: FormProps) {
+
+    const stateInitial = { categoria: 1, actividad: "", calorias: 0}
+    const [actividades, setActividades] = useState<Iactividades>(stateInitial)
 
     const handleOnChanhe = (e : ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) =>{
         const isNumber = ["categoria", "calorias" ].includes(e.target.id)
@@ -22,13 +25,21 @@ export default function Form() {
         const {actividad,  calorias} = actividades;
         return actividad.trim() !== "" && calorias > 0
     }
+    
 
-    // isActivo()
-
+    const handleSubmit= (e: FormEvent<HTMLFormElement>) =>
+    {
+        e.preventDefault()
+        dispatch({type: ActivityActionsType.Save_Activity, payload: {newActivity: actividades}})
+        setActividades(stateInitial)
+    }
+   
   return (
     <>
         <section className=" bg-primary d-flex justify-content-center">
-            <form className=" my-5 bg-white p-5 rounded col-8">
+            <form className=" my-5 bg-white p-5 rounded col-8"
+                onSubmit={handleSubmit }
+            >
                 <div>
                     <label htmlFor="categoria" className="col-12 p-2 fw-bold" >Categoria</label>
                     <select className=" border col-12 p-2 ms-2 rounded-2" id="categoria" value={actividades.categoria} 
