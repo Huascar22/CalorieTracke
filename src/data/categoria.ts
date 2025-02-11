@@ -1,4 +1,4 @@
-import { Icategoria } from "../../types/Icategoria";
+import { Icategoria } from "../types/index";
 
 export const categorias: Icategoria[] = [
     { id: 1, name: 'Comida'},

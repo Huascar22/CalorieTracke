@@ -1,15 +1,16 @@
 import { useState, ChangeEvent, FormEvent, Dispatch, useEffect } from "react"
-import { categorias } from "./data/categoria"
+import { categorias } from "../data/categoria"
 import { Iactividades } from "../types"
-import { IactivityActions, ActivityActionsType } from "../reducers/activity-reducer"
+import { IactivityActions, ActivityActionsType, ActivityState } from "../reducers/activity-reducer"
 
 type FormProps = {
-    dispatch: Dispatch<IactivityActions>
+    dispatch: Dispatch<IactivityActions>,
+    state: ActivityState
 }
 
-export default function Form({dispatch}: FormProps) {
+export default function Form({dispatch, state}: FormProps) {
 
-    const stateInitial = { categoria: 1, actividad: "", calorias: 0}
+    const stateInitial = { id : new Date().getTime(), categoria: 1, actividad: "", calorias: 0}
     const [actividades, setActividades] = useState<Iactividades>(stateInitial)
 
     const handleOnChanhe = (e : ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) =>{
@@ -26,13 +27,19 @@ export default function Form({dispatch}: FormProps) {
         return actividad.trim() !== "" && calorias > 0
     }
     
-
     const handleSubmit= (e: FormEvent<HTMLFormElement>) =>
     {
         e.preventDefault()
         dispatch({type: ActivityActionsType.Save_Activity, payload: {newActivity: actividades}})
         setActividades(stateInitial)
     }
+
+    useEffect(()=>{
+        if(state.actividadUpdateId){
+            const ActividadEdit = state.actividades.filter(item =>  item.id === state.actividadUpdateId)[0];
+            setActividades(ActividadEdit);
+        }
+    }, [state])
    
   return (
     <>
@@ -72,7 +79,6 @@ export default function Form({dispatch}: FormProps) {
                     disabled = {!isActivo()}
                     value={actividades.categoria == 1? "Guardar Comida" : "Guardar Ejercicio"}
                 />
-    
             </form>
         </section>
     </>
