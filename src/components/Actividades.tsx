@@ -19,9 +19,12 @@ export default function Actividades({actividades, dispatch}: ActividadesProps) {
 
   return (
     <>       
-            <h3 className=" fw-bold text-center m-5">Comida y Actividades</h3>
-            { actividades.map(item =>(
-                <div className=" card col-4 row d-flex mx-auto mb-4 border-2 rounded rounded-5 " key={item.id}>
+            <h3 className=" fw-bold text-center mt-5">Comida y Actividades</h3>
+
+             { actividades.length === 0? <p className=" text-center ">No hay actividades aún....</p> :
+             
+             actividades.map(item =>(
+                <div className=" card col-4 row d-flex mx-auto mt-4 border-2 rounded rounded-5 " key={item.id}>
                     <p className={`col-4 text-white fw-bold  ${item.categoria === 1? "bg-primary": "bg-warning"}`}>
                         {ObtenerNombreCatgoria(item.categoria)}</p>
 
@@ -30,11 +33,20 @@ export default function Actividades({actividades, dispatch}: ActividadesProps) {
                             <h4 className=" fw-bold ">{item.actividad}</h4>
                             <h1 className=" fw-bold text-primary m-0">{item.calorias} Calorias</h1>
                         </div>
-                        <button className=" rounded-5 btn btn-primary"
-                            onClick={() => dispatch({type: ActivityActionsType.Update_Activity, payload : {id: item.id}})}
-                        >
-                            <i className="bi bi-pencil-square"></i>
-                        </button>                     
+
+                        <div>
+                            <button className=" rounded-5 btn btn-primary me-2"
+                                onClick={() => dispatch({type: ActivityActionsType.Update_Activity, payload : {id: item.id}})}
+                            >
+                                <i className="bi bi-pencil-square"></i>
+                            </button>   
+                            <button className=" rounded-5 btn btn-danger"
+                                onClick={() => dispatch({type: ActivityActionsType.Delete_Activity, payload : {id: item.id}})}
+                            >
+                                X
+                            </button>   
+                        </div>
+                                       
                     </div>
                 </div>))
             }   
